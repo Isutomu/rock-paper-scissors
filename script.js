@@ -24,38 +24,41 @@ function playRound(playerSelection, computerSelection) {
     return result;
 }
 
-function playGame() {
-    let winsCount = 0;
-    let lossesCount = 0;
-    let playerChoice;
-    const POSSIBLE_CHOICES = ['rock', 'paper', 'scissors'];
-    
-    for (let i = 0; i < 5; i++) {
-        while(true) {
-            playerChoice = prompt("JanKenPon! ('rock', 'paper' or 'scissors')");
-            if (POSSIBLE_CHOICES.includes(playerChoice.toLowerCase())) {
-                break;
-            }
-            alert("Type a valid choice!");
-        }
-        
-        result = playRound(playerChoice.toLowerCase(), getComputerChoice());
-        console.log(result);
-
-        if (result.includes('Win')) {
-            winsCount++;
-        } else if (result.includes('Lose')) {
-            lossesCount++;
-        }
-    }
-
-    if (winsCount > lossesCount) {
-        console.log("You won!!!");
-    } else if (lossesCount > winsCount) {
-        console.log("You lost!!!");
-    } else {
-        console.log("It's a draw!");
-    }
+function resetScores() {
+    scorePlayerDiv.textContent = 0;
+    scoreComputerDiv.textContent = 0;
 }
 
-playGame()
+const rockButton = document.querySelector("#rock");
+const paperButton = document.querySelector("#paper");
+const scissorsButton = document.querySelector("#scissors");
+const resultDiv = document.querySelector("#result");
+const scorePlayerDiv = document.querySelector("#scorePlayer");
+const scoreComputerDiv = document.querySelector("#scoreComputer");
+const finalResult = document.querySelector("#finalResult");
+
+[rockButton, paperButton, scissorsButton].forEach((button) => {
+    button.addEventListener('click', () => {
+        if (finalResult.textContent) {
+            finalResult.textContent = '';
+        }
+
+        result = playRound(button.id, getComputerChoice());
+        resultDiv.textContent = result;
+        
+        if (result.includes('Win')) {
+            scorePlayerDiv.textContent = +(scorePlayerDiv.textContent) + 1;
+        } else if (result.includes('Lose')) {
+            scoreComputerDiv.textContent = +(scoreComputerDiv.textContent) + 1;
+        }
+
+        if (scorePlayerDiv.textContent === '5') {
+            finalResult.textContent = 'You won!!!'
+            resetScores();
+        }
+        if (scoreComputerDiv.textContent === '5') {
+            finalResult.textContent = 'You lost... :('
+            resetScores();
+        }
+    })
+})
